@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 
-os.environ["TESSDATA_PREFIX"] = "/usr/share/tesseract-ocr/4.00/tessdata"
+os.environ["TESSDATA_PREFIX"] = "/usr/share/tesseract-ocr/4.00/"
 
 tesseract_path = shutil.which("tesseract")
 print(f"Tesseract Path: {tesseract_path}")
