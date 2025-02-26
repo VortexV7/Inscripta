@@ -1,20 +1,20 @@
 # Use an official lightweight Python image
 FROM python:3.10-slim
 
-# Install Tesseract and required language packs
+# Install system dependencies including Tesseract
 RUN apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-hin
 
-# Set working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy all files from your GitHub repo to the container
+# Copy all project files to the container
 COPY . .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the port where your Flask app runs
+# Expose the port Flask runs on
 EXPOSE 5000
 
-# Set the entry point for running the app
+# Command to run the Flask app
 CMD ["python", "app.py"]
