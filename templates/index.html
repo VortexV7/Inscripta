@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscripta</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            transition: background 1s ease-in-out;
+        }
+        .bg-initial { background: linear-gradient(135deg, #ff6b6b, #ffb199); }
+        .bg-processing { background: linear-gradient(135deg, #ffcc00, #ff8800); }
+        .bg-done { background: linear-gradient(135deg, #4CAF50, #2E8B57); }
+
+        /* Loading Animation */
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 6px solid transparent;
+            border-top: 6px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Copy Icon Tooltip */
+        .copy-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .tooltip {
+            visibility: hidden;
+            background-color: black;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+            position: absolute;
+            top: -30px;
+            right: 0;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .copy-container:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-initial min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="w-full bg-gray-900 text-white py-4 px-6 flex justify-between items-center fixed top-0 shadow-lg z-50">
+        <img src="\static\logo.png" alt="Logo" class="h-10">
+        <h1 class="text-2xl font-bold">INSCRIPTA</h1>
+        <div id="loading" class="hidden">
+            <div class="loader"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div id="uploadSection" class="flex-grow flex items-center justify-center pt-32 px-6">
+        <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl text-center">
+            <h2 class="text-2xl font-semibold text-gray-800">Upload an Image</h2>
+            <div class="flex flex-col items-center justify-center gap-4 mt-4">
+                <label class="file-input bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer">
+                    Choose File
+                    <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="handleFileUpload()">
+                </label>
+            </div>
+            <button id="convertButton" onclick="processImage()" class="px-6 py-2 mt-4 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 hidden">
+                Convert to Text
+            </button>
+        </div>
+    </div>
+
+    <!-- Image & Converted Text Section -->
+    <div id="results" class="hidden flex flex-col items-center mt-32 px-6 mb-6">  
+        <div class="flex space-x-10 w-full max-w-4xl mt-4">
+            <div class="w-1/2 bg-gray-900 p-6 text-white rounded-lg shadow-lg">
+                <h3 class="text-lg font-semibold">Uploaded Image</h3>
+                <img id="preview" src="" class="mt-4 max-w-full rounded-lg">
+            </div>
+            <div class="w-1/2 bg-gray-900 p-6 text-white rounded-lg shadow-lg relative">
+                <h3 class="text-lg font-semibold flex items-center justify-between">
+                    Converted Text
+                    <span id="copyContainer" class="copy-container hidden" onclick="copyText()">
+                        <i class="fas fa-copy text-xl cursor-pointer"></i>
+                        <span class="tooltip">Copy Text</span>
+                    </span>
+                </h3>
+                <p id="outputText" class="mt-4 text-gray-200">Processing...</p>
+                <a id="downloadBtn" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hidden" download="converted_text.txt">
+                    Download Text
+                </a>
+            </div>
+        </div>
+
+        <!-- Convert Next Image Button (Initially Hidden) -->
+        <button id="convertNextBtn" onclick="resetUpload()" class="mt-6 px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 hidden">
+            Convert Next Image
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full bg-gray-900 text-center text-white py-4 mt-10">
+        <p>Contact: <a href="mailto:hydro.ved5@gmail.com" class="text-blue-400 hover:underline">hydro.ved5@gmail.com</a> | Made with ❤️ by Vortex Visuals</p>
+        <div class="flex justify-center gap-6 mt-2 text-xl">
+            <a href="https://x.com/ved_v7" class="text-blue-400"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.linkedin.com/in/ved-sharanagate" class="text-blue-600"><i class="fab fa-linkedin"></i></a>
+            <a href="https://www.instagram.com/veddd.zip/" class="text-red-500"><i class="fab fa-instagram"></i></a>
+            <a href="https://github.com/VortexV7" class="text-gray-300"><i class="fab fa-github"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        function handleFileUpload() {
+            const input = document.getElementById("imageInput");
+            if (input.files.length > 0) {
+                document.getElementById("convertButton").classList.remove("hidden");
+            }
+        }
+
+        function processImage() {
+            const input = document.getElementById("imageInput");
+            if (!input.files.length) {
+                alert("Please upload an image first.");
+                return;
+            }
+
+            document.getElementById("uploadSection").classList.add("hidden");
+            document.getElementById("loading").classList.remove("hidden");
+            document.body.classList.remove("bg-initial", "bg-done");
+            document.body.classList.add("bg-processing");
+            document.getElementById("preview").src = URL.createObjectURL(input.files[0]);
+            document.getElementById("results").classList.remove("hidden");
+
+            const formData = new FormData();
+            formData.append("image", input.files[0]);
+
+            fetch("/upload", { method: "POST", body: formData })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("loading").classList.add("hidden");
+                document.body.classList.remove("bg-processing");
+                document.body.classList.add("bg-done");
+
+                if (data.error) {
+                    document.getElementById("outputText").innerText = "Error: " + data.error;
+                } else {
+                    document.getElementById("outputText").innerText = data.text;
+                    document.getElementById("downloadBtn").classList.remove("hidden");
+                    document.getElementById("copyContainer").classList.remove("hidden");
+                    document.getElementById("convertNextBtn").classList.remove("hidden");
+
+                    const blob = new Blob([data.text], { type: "text/plain" });
+                    document.getElementById("downloadBtn").href = URL.createObjectURL(blob);
+                }
+            });
+        }
+
+        function resetUpload() {
+            window.open(window.location.href, '_blank');
+        }
+
+        function copyText() {
+            navigator.clipboard.writeText(document.getElementById("outputText").innerText);
+            const tooltip = document.querySelector(".tooltip");
+            tooltip.innerText = "Text Copied!";
+            setTimeout(() => tooltip.innerText = "Copy Text", 2000);
+        }
+    </script>
+</body>
+</html>
