@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import pytesseract
+import shutil
 from PIL import Image
 import os
 
@@ -9,6 +10,10 @@ app = Flask(__name__)
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 
 os.environ["TESSDATA_PREFIX"] = os.path.join(os.getcwd(), "tessdata")
+
+tesseract_path = shutil.which("tesseract")
+print(f"Tesseract Path: {tesseract_path}")
+
 
 @app.route("/")
 def home():
