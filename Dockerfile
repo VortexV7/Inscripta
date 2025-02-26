@@ -1,23 +1,20 @@
 # Use an official lightweight Python image
-FROM python:3.9-slim
+FROM python:3.10-slim
 
-# Install system dependencies and Tesseract with Hindi language support
-RUN apt-get update && apt-get install -y \
-    tesseract-ocr \
-    tesseract-ocr-hin \
-    && rm -rf /var/lib/apt/lists/*
+# Install Tesseract and required language packs
+RUN apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-hin
 
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy all project files into the container
-COPY . /app
+# Copy all files from your GitHub repo to the container
+COPY . .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the port Flask runs on
+# Expose the port where your Flask app runs
 EXPOSE 5000
 
-# Start the Flask app
+# Set the entry point for running the app
 CMD ["python", "app.py"]
