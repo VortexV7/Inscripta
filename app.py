@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 
-os.environ["TESSDATA_PREFIX"] = os.path.join(os.getcwd(), "tessdata")
+os.environ["TESSDATA_PREFIX"] = "/usr/share/tesseract-ocr/4.00/tessdata"
 
 tesseract_path = shutil.which("tesseract")
 print(f"Tesseract Path: {tesseract_path}")
@@ -36,4 +36,4 @@ def upload():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000 ,debug=True)
