@@ -1,18 +1,13 @@
 from flask import Flask, render_template, request, jsonify
 import pytesseract
-import shutil
 from PIL import Image
 import os
 
 app = Flask(__name__)
 
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
-pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
-
-os.environ["TESSDATA_PREFIX"] = "/usr/share/tesseract-ocr/4.00/tessdata/"
-
-print("TESSDATA_PREFIX:", os.environ["TESSDATA_PREFIX"]) 
-
+os.environ["TESSDATA_PREFIX"] = os.path.join(os.getcwd(), "tessdata")
 
 @app.route("/")
 def home():
@@ -29,10 +24,15 @@ def upload():
 
     try:
         image = Image.open(file)
-        extracted_text = pytesseract.image_to_string(image, lang="eng+hin+mar")
+        try:
+            extracted_text = pytesseract.image_to_string(image, lang="eng+hin+mar")
+            print("Text extraction successful!")
+        except Exception as e:
+            print(f"Error during OCR processing: {e}")
+            extracted_text = "Error processing image."
         return jsonify({"text": extracted_text})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000 ,debug=True)
+    app.run(debug=True)
