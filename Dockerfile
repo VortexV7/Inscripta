@@ -1,29 +1,25 @@
-# Use official Python image as a base
-FROM python:3.9-slim
+# Use Python base image
+FROM python:3.9
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    tesseract-ocr-hin \
+    tesseract-ocr-mar \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Install required dependencies
-RUN apt-get update && apt-get install -y tesseract-ocr \
-    && apt-get install -y wget \
-    && mkdir -p /usr/share/tesseract-ocr/4.00/tessdata/ \
-    && wget -P /usr/share/tesseract-ocr/4.00/tessdata/ \
-        https://github.com/tesseract-ocr/tessdata_best/raw/main/eng.traineddata \
-        https://github.com/tesseract-ocr/tessdata_best/raw/main/hin.traineddata \
-        https://github.com/tesseract-ocr/tessdata_best/raw/main/mar.traineddata
-
-# Set environment variable for Tesseract data path
-ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
-
-# Copy all files from local project to container
-COPY . /app
+# Copy project files
+COPY . .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the port for Flask
-EXPOSE 5000
+# Set Tesseract data path
+ENV TESSDATA_PREFIX="/usr/share/tesseract-ocr/4.00/tessdata"
 
-# Run the application
+# Run the app
 CMD ["python", "app.py"]
