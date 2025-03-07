@@ -24,8 +24,11 @@ COPY . /app
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port 10000
-EXPOSE 10000
+# Install Gunicorn
+RUN pip install gunicorn
 
-# Run the Flask app
-CMD ["python", "app.py"]
+# Expose port 8080 (Railway's default port)
+EXPOSE 8080
+
+# Run the Flask app using Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
