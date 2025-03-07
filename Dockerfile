@@ -19,6 +19,9 @@ RUN mkdir -p /usr/share/tesseract-ocr/4.00/tessdata && \
     wget https://github.com/tesseract-ocr/tessdata/raw/main/hin.traineddata && \
     wget https://github.com/tesseract-ocr/tessdata/raw/main/mar.traineddata
 
+# Set TESSDATA_PREFIX environment variable
+ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
+
 # Copy the current directory contents into the container at /app
 COPY . /app
 
