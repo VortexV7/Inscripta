@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Log Tesseract path
 logging.debug(f"Tesseract path: {pytesseract.pytesseract.tesseract_cmd}")
-
+logging.debug(f"TESSDATA_PREFIX: {os.environ.get('TESSDATA_PREFIX')}")
 app = Flask(__name__)
 
 # Set TESSDATA_PREFIX environment variable
