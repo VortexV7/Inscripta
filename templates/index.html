@@ -10,6 +10,7 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
     <style>
+
         body {
             font-family: 'Poppins', sans-serif;
             transition: background 1s ease-in-out;
@@ -181,5 +182,35 @@
             setTimeout(() => tooltip.innerText = "Copy Text", 2000);
         }
     </script>
+    
+<!-- Floating Donate Button -->
+<a href="https://www.buymeacoffee.com/veddd.zip" target="_blank" class="donate-btn">
+    ☕ Buy Me a Coffee
+</a>
+
+<!-- CSS for Floating Button -->
+<style>
+    .donate-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #ffdd57;
+        color: #000;
+        padding: 10px 15px;
+        font-weight: bold;
+        font-family: Poppins, sans-serif;
+        text-decoration: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+    }
+
+    .donate-btn:hover {
+        background-color: #ffc107;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+</style>
+
+
 </body>
 </html>
