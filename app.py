@@ -2,12 +2,15 @@ from flask import Flask, render_template, request, jsonify
 import pytesseract
 from PIL import Image
 import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
-os.environ["TESSDATA_PREFIX"] = os.path.join(os.getcwd(), "tessdata")
+# Set TESSDATA_PREFIX environment variable
+os.environ["TESSDATA_PREFIX"] = "/usr/share/tesseract-ocr/4.00/tessdata"
 
 @app.route("/")
 def home():
@@ -25,15 +28,16 @@ def upload():
     try:
         image = Image.open(file)
         try:
+            # Extract text using Tesseract
             extracted_text = pytesseract.image_to_string(image, lang="eng+hin+mar")
-            print("Text extraction successful!")
+            logging.debug("Text extraction successful!")
         except Exception as e:
-            print(f"Error during OCR processing: {e}")
+            logging.error(f"Error during OCR processing: {e}")
             extracted_text = "Error processing image."
         return jsonify({"text": extracted_text})
     except Exception as e:
+        logging.error(f"Error opening image: {e}")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000, debug=True)
-
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)), debug=True)
