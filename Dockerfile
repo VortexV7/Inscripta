@@ -4,11 +4,12 @@ FROM python:3.9-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies (Tesseract and its dependencies)
+# Install system dependencies (Tesseract, wget, and their dependencies)
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     libtesseract-dev \
     libleptonica-dev \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
 # Download Tesseract language data
