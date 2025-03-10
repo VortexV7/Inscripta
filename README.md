@@ -23,7 +23,7 @@
 ### Setup
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/inscripta.git
+   git clone https://github.com/VortexV7/inscripta.git
    cd inscripta
    ```
 2. Install dependencies:
